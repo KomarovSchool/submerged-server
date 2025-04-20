@@ -38,7 +38,7 @@ async def generate_description_with_gpt(image_bytes: bytes) -> Optional[str]:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Describe the fish or marine life visible in this image. Identify the species if possible and provide a short, engaging description or interesting fact about it.",
+                            "text": "Describe the fish or marine life visible in this image. Identify the species if possible and provide a short, engaging description or interesting fact about it. Write in Russian",
                         },
                         {
                             "type": "image_url",

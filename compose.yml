@@ -1,0 +1,20 @@
+# docker-compose.yml
+version: '3.9' # Specify compose file version
+
+services:
+  # Define the service for your application
+  vision_server:
+    # Tell compose how to build the image
+    build:
+      context: . # Use the current directory as the build context
+      dockerfile: Dockerfile # Specify the Dockerfile name
+    # Define a predictable name for the container (optional)
+    container_name: submerged-server
+    # Load environment variables from the .env file in the build context
+    # This securely passes your API keys into the container environment
+    env_file:
+      - .env
+    # Map port 8000 on the host to port 8000 in the container
+    ports:
+      - "8123:8123"
+    restart: unless-stopped

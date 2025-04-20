@@ -1,16 +1,20 @@
+import logging
 import os
+from io import BytesIO
 from typing import Optional
 
 from aiogram import Bot
+from aiogram.client.default import DefaultBotProperties
 from aiogram.exceptions import TelegramAPIError
+from aiogram.types import BufferedInputFile
 
-from submerged.gpt import logger
+logger = logging.getLogger(__name__)
 
 TELEGRAM_BOT_TOKEN: Optional[str] = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHANNEL_ID: Optional[str] = os.getenv(
     "TELEGRAM_CHANNEL_ID"
 )  # Can be chat ID or channel username like '@mychannel'
-bot = Bot(token=TELEGRAM_BOT_TOKEN, parse_mode="HTML")
+bot = Bot(token=TELEGRAM_BOT_TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
 
 
 async def post_to_telegram(image_bytes: bytes, description: str) -> bool:
@@ -28,20 +32,20 @@ async def post_to_telegram(image_bytes: bytes, description: str) -> bool:
         logger.info(
             f"Sending photo and description to Telegram channel: {TELEGRAM_CHANNEL_ID}"
         )
-        # Send photo with caption
+        photo = BufferedInputFile(image_bytes, filename="image.jpg")
         await bot.send_photo(
             chat_id=TELEGRAM_CHANNEL_ID,
-            photo=image_bytes,  # aiogram can handle raw bytes directly
+            photo=photo,  # aiogram can handle raw bytes directly
             caption=description,
             # You can add more formatting or options here if needed
         )
         logger.info("Successfully posted to Telegram.")
         return True
     except TelegramAPIError as e:
-        logger.error(f"Error sending message to Telegram: {e}", exc_info=True)
+        logger.exception(f"Error sending message to Telegram: {e}", exc_info=True)
         return False
     except Exception as e:
-        logger.error(
+        logger.exception(
             f"An unexpected error occurred during Telegram posting: {e}", exc_info=True
         )
         return False
