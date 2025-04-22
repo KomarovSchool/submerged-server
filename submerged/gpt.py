@@ -1,9 +1,12 @@
 import base64
 import logging
 import os
+import dotenv
 from typing import Optional
 
 from openai import AsyncOpenAI
+
+dotenv.load_dotenv()
 
 logger = logging.getLogger(__name__)
 OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
